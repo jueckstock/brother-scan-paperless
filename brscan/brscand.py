@@ -19,6 +19,7 @@ from . import snmp
 
 
 def main():
+    print("YOLO")
     parser = argparse.ArgumentParser(
         description='Brother network scanner server')
     parser.add_argument('bind_addr', metavar='BIND_ADDR',
@@ -46,11 +47,13 @@ def main():
         args.advertise_port = args.bind_port
 
     # Resolv hosts
+    print("Resolving hosts...")
     args.bind_addr = socket.gethostbyname(args.bind_addr)
     args.advertise_addr = socket.gethostbyname(args.advertise_addr)
     args.scanner_addr = socket.gethostbyname(args.scanner_addr)
 
     # Loading global configuration
+    print("Loading config...")
     try:
         with open(args.config) as configfile:
             config = yaml.load(configfile, Loader=CLoader)
@@ -58,16 +61,19 @@ def main():
         print('Error: %s: %s' % (e.strerror, e.filename))
         sys.exit(1)
 
-    # Start Snmp
+    # Start Listen
+    print("Starting 'Listen' thread...")
     listenThread = threading.Thread(target=listen.launch, args=(args, config))
     listenThread.start()
     time.sleep(1)
 
     # Start Snmp
+    print("Starting 'SNMP' thread...")
     snmpThread = threading.Thread(target=snmp.launch, args=(args, config))
     snmpThread.start()
 
     # Wait for closing
+    print("brscand started!")
     snmpThread.join()
     listenThread.join()
 
