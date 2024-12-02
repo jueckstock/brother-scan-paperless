@@ -19,7 +19,6 @@ from . import snmp
 
 
 def main():
-    print("YOLO")
     parser = argparse.ArgumentParser(
         description='Brother network scanner server')
     parser.add_argument('bind_addr', metavar='BIND_ADDR',
